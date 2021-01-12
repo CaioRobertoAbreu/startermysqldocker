@@ -1,0 +1,41 @@
+version: "3"
+services:
+  api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: startermysql-api
+    container_name: startermysql-api
+    ports:
+    - "8080"
+    volumes:
+    - type: volume
+      source: startermysql-volume
+      target: /volume
+    links:
+      - database
+
+
+  database:
+    image: mysql:8.0.2
+    container_name: startermysql-db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    working_dir: "/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: startermysqldb
+    ports:
+    - "3306:3306"
+    volumes:
+    - type: volume
+      source: mysql-volume
+      target: /mysql
+
+
+volumes:
+  startermysql-volume:
+    name: startermysql-volume
+
+  mysql-volume:
+    name: mysql-volume
